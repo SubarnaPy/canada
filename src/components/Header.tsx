@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Globe, LogIn, Menu, LogOut, User } from "lucide-react";
+import { Globe, LogIn, Menu, ShieldCheck, LogOut, User } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -57,197 +57,129 @@ export const Header = () => {
           </div>
         </Link>
 
-        {/* Desktop Navigation - Simplified */}
-        <nav className="hidden md:flex items-center space-x-1">
-          <Link 
-            to="/" 
-            className="px-4 py-2 text-sm font-medium hover:text-white transition-colors"
-          >
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center space-x-2">
+          <Link to="/" className="px-4 py-2 text-sm font-medium rounded-xl transition-all duration-300 hover:bg-white/10 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] hover:scale-105">
             Home
           </Link>
-
-          <Link 
-            to="/services" 
-            className="px-4 py-2 text-sm font-medium hover:text-white transition-colors"
-          >
+          <Link to="/services" className="px-4 py-2 text-sm font-medium rounded-xl transition-all duration-300 hover:bg-white/10 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] hover:scale-105">
             Services
           </Link>
-
-          <Link 
-            to="/resources" 
-            className="px-4 py-2 text-sm font-medium hover:text-white transition-colors"
-          >
+          <Link to="/resources" className="px-4 py-2 text-sm font-medium rounded-xl transition-all duration-300 hover:bg-white/10 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] hover:scale-105">
             Resources
           </Link>
-
-          <Link 
-            to="/shop" 
-            className="px-4 py-2 text-sm font-medium hover:text-white transition-colors"
-          >
+          <Link to="/shop" className="px-4 py-2 text-sm font-medium rounded-xl transition-all duration-300 hover:bg-white/10 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] hover:scale-105">
             Courses
           </Link>
-
-          <Link 
-            to="/webinars" 
-            className="px-4 py-2 text-sm font-medium hover:text-white transition-colors"
-          >
+          <Link to="/webinars" className="px-4 py-2 text-sm font-medium rounded-xl transition-all duration-300 hover:bg-white/10 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] hover:scale-105">
             Webinars
           </Link>
-
-          <Link 
-            to="/blog" 
-            className="px-4 py-2 text-sm font-medium hover:text-white transition-colors"
-          >
+          <Link to="/blog" className="px-4 py-2 text-sm font-medium rounded-xl transition-all duration-300 hover:bg-white/10 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] hover:scale-105">
             Blog
           </Link>
         </nav>
 
-        {/* Right Actions - Simplified */}
+        {/* Right Actions */}
         <div className="flex items-center space-x-3">
-          {/* Language Switcher */}
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={toggleLanguage} 
-            className="hidden md:flex items-center space-x-1 px-3 py-2 hover:bg-white/5 transition-colors"
-          >
+          <Button variant="ghost" size="sm" onClick={toggleLanguage} className="hidden md:flex items-center space-x-2 px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all duration-300 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] hover:scale-105">
             <Globe className="h-4 w-4" />
             <span className="font-medium">{language}</span>
           </Button>
           
-          {user ? (
-            <>
-              <Link to="/profile">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="hidden md:flex items-center space-x-2 px-4 py-2 hover:bg-white/5 transition-colors"
-                >
+          {user ? <>
+              {isAdmin && <Link to="/admin">
+                  <Button variant="ghost" size="sm" className="hidden md:flex items-center space-x-2 px-4 py-2 rounded-xl bg-gradient-to-r from-red-600/10 to-red-500/10 border border-red-500/30 text-red-600 hover:from-red-600 hover:to-red-500 hover:text-white hover:border-red-600 transition-all duration-300 hover:shadow-[0_8px_24px_rgba(239,68,68,0.3)] hover:scale-105 font-medium">
+                    <ShieldCheck className="h-4 w-4" />
+                    <span>Admin Panel</span>
+                  </Button>
+                </Link>}
+              
+              <Link to="/dashboard">
+                <Button variant="ghost" size="sm" className="hidden md:flex items-center space-x-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all duration-300 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] hover:scale-105 font-medium">
                   <User className="h-4 w-4" />
-                  <span>Profile</span>
+                  <span>My Dashboard</span>
                 </Button>
               </Link>
 
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={handleLogout} 
-                className="hidden md:flex items-center space-x-2 px-4 py-2 hover:bg-white/5 transition-colors"
-              >
+              <Button variant="outline" size="sm" onClick={handleLogout} className="hidden md:flex items-center space-x-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all duration-300 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] hover:scale-105 font-medium">
                 <LogOut className="h-4 w-4" />
                 <span>Logout</span>
               </Button>
-            </>
-          ) : (
-            <Link to="/auth">
-              <Button 
-                size="sm" 
-                className="hidden md:flex items-center space-x-2 px-6 py-2 bg-[#F0B90B] hover:bg-[#F3BA2F] text-[#0B0E11] font-semibold rounded-full transition-all"
-              >
-                <LogIn className="h-4 w-4" />
-                <span>Login / Sign Up</span>
-              </Button>
-            </Link>
-          )}
+            </> : <Link to="/auth">
+                <Button variant="default" size="sm" className="hidden md:flex items-center space-x-2 px-4 py-2 rounded-xl bg-primary hover:bg-primary/90 transition-all duration-300 hover:shadow-[0_8px_24px_rgba(var(--primary)/0.3)] hover:scale-105 font-medium">
+                  <LogIn className="h-4 w-4" />
+                  <span>Login / Sign Up</span>
+                </Button>
+              </Link>}
 
           {/* Mobile Menu Button */}
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="md:hidden p-2" 
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
+          <Button variant="ghost" size="sm" className="md:hidden p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all duration-300" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             <Menu className="h-5 w-5" />
           </Button>
         </div>
       </div>
 
-      {/* Mobile Menu with Slide-in Animation */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-t border-white/10 bg-background/95 backdrop-blur-xl p-6 space-y-4 shadow-[0_8px_32px_0_rgba(0,0,0,0.12)] animate-in slide-in-from-top-4 fade-in duration-300">
+      {/* Mobile Menu */}
+      {mobileMenuOpen && <div className="md:hidden border-t border-white/10 bg-background/95 backdrop-blur-xl p-6 space-y-4 shadow-[0_8px_32px_0_rgba(0,0,0,0.12)]">
           <nav className="flex flex-col space-y-2">
-            <Link 
-              to="/" 
-              onClick={() => setMobileMenuOpen(false)}
-              className={`px-4 py-3 text-sm font-medium rounded-xl transition-all duration-300 hover:bg-white/10 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] ${
-                isActive('/') ? 'bg-[#F0B90B]/10 text-[#F0B90B] border border-[#F0B90B]/30' : ''
-              }`}
-            >
+            <Link to="/" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm font-medium rounded-xl transition-all duration-300 hover:bg-white/10 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)]">
               Home
             </Link>
-            <Link 
-              to="/services" 
-              onClick={() => setMobileMenuOpen(false)}
-              className={`px-4 py-3 text-sm font-medium rounded-xl transition-all duration-300 hover:bg-white/10 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] ${
-                isActive('/services') ? 'bg-[#F0B90B]/10 text-[#F0B90B] border border-[#F0B90B]/30' : ''
-              }`}
-            >
+            <Link to="/services" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm font-medium rounded-xl transition-all duration-300 hover:bg-white/10 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)]">
               Services
             </Link>
-            <Link 
-              to="/resources" 
-              onClick={() => setMobileMenuOpen(false)}
-              className={`px-4 py-3 text-sm font-medium rounded-xl transition-all duration-300 hover:bg-white/10 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] ${
-                isActive('/resources') ? 'bg-[#F0B90B]/10 text-[#F0B90B] border border-[#F0B90B]/30' : ''
-              }`}
-            >
+            <Link to="/resources" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm font-medium rounded-xl transition-all duration-300 hover:bg-white/10 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)]">
               Resources
             </Link>
-            <Link 
-              to="/shop" 
-              onClick={() => setMobileMenuOpen(false)}
-              className={`px-4 py-3 text-sm font-medium rounded-xl transition-all duration-300 hover:bg-white/10 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] ${
-                isActive('/shop') ? 'bg-[#F0B90B]/10 text-[#F0B90B] border border-[#F0B90B]/30' : ''
-              }`}
-            >
+            <Link to="/shop" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm font-medium rounded-xl transition-all duration-300 hover:bg-white/10 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)]">
               Courses
             </Link>
-            <Link 
-              to="/webinars" 
-              onClick={() => setMobileMenuOpen(false)}
-              className={`px-4 py-3 text-sm font-medium rounded-xl transition-all duration-300 hover:bg-white/10 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] ${
-                isActive('/webinars') ? 'bg-[#F0B90B]/10 text-[#F0B90B] border border-[#F0B90B]/30' : ''
-              }`}
-            >
+            <Link to="/webinars" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm font-medium rounded-xl transition-all duration-300 hover:bg-white/10 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)]">
               Webinars
             </Link>
-            <Link 
-              to="/blog" 
-              onClick={() => setMobileMenuOpen(false)}
-              className={`px-4 py-3 text-sm font-medium rounded-xl transition-all duration-300 hover:bg-white/10 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] ${
-                isActive('/blog') ? 'bg-[#F0B90B]/10 text-[#F0B90B] border border-[#F0B90B]/30' : ''
-              }`}
-            >
+            <Link to="/blog" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm font-medium rounded-xl transition-all duration-300 hover:bg-white/10 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)]">
               Blog
             </Link>
           </nav>
           <div className="flex flex-col space-y-2 pt-4 border-t border-white/10">
-            <Button variant="ghost" size="sm" onClick={toggleLanguage} className="justify-start px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10">
+            <Button variant="ghost" size="sm" onClick={toggleLanguage} className="justify-start px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10">
               <Globe className="h-4 w-4 mr-2" />
               {language}
             </Button>
             
             {user ? <>
-                <Link to="/profile" className="w-full" onClick={() => setMobileMenuOpen(false)}>
-                  <Button variant="ghost" size="sm" className="justify-start w-full px-4 py-3 rounded-xl hover:bg-white/10">
+                {isAdmin && <Link to="/admin" className="w-full" onClick={() => setMobileMenuOpen(false)}>
+                    <Button variant="ghost" size="sm" className="justify-start w-full px-4 py-3 rounded-xl bg-gradient-to-r from-red-600/10 to-red-500/10 border border-red-500/30 text-red-600">
+                      <ShieldCheck className="h-4 w-4 mr-2" />
+                      Admin Panel
+                    </Button>
+                  </Link>}
+                
+                <Link to="/dashboard" className="w-full" onClick={() => setMobileMenuOpen(false)}>
+                  <Button variant="ghost" size="sm" className="justify-start w-full px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10">
                     <User className="h-4 w-4 mr-2" />
-                    Profile
+                    My Dashboard
                   </Button>
                 </Link>
 
-                <Button variant="outline" size="sm" onClick={() => { handleLogout(); setMobileMenuOpen(false); }} className="justify-start w-full px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10">
+                <Button variant="outline" size="sm" onClick={() => { handleLogout(); setMobileMenuOpen(false); }} className="justify-start w-full px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10">
                   <LogOut className="h-4 w-4 mr-2" />
                   Logout
                 </Button>
               </> : <Link to="/auth" className="w-full" onClick={() => setMobileMenuOpen(false)}>
-                  <Button size="sm" className="justify-start w-full px-4 py-3 rounded-full bg-[#F0B90B] hover:bg-[#F3BA2F] text-[#0B0E11] font-semibold">
+                  <Button variant="default" size="sm" className="justify-start w-full px-4 py-3 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium shadow-[0_4px_16px_rgba(0,0,0,0.12)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.18)] transition-all duration-300">
                     <LogIn className="h-4 w-4 mr-2" />
                     Login / Sign Up
                   </Button>
                 </Link>}
+            
+            <Link to="/services" className="w-full" onClick={() => setMobileMenuOpen(false)}>
+              <Button variant="secondary" size="sm" className="w-full px-4 py-3 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium shadow-[0_4px_16px_rgba(0,0,0,0.12)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.18)] transition-all duration-300">
+                Book Consultation
+              </Button>
+            </Link>
           </div>
-        </div>
-      )}
+        </div>}
     </header>
     </>
   );

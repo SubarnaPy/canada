@@ -1,40 +1,9 @@
 import { Link } from "react-router-dom";
-import { Facebook, Twitter, Linkedin, Instagram, Mail } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useState } from "react";
-import { toast } from "sonner";
-
+import { Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
 export const Footer = () => {
-  const [email, setEmail] = useState("");
-  const [isSubscribing, setIsSubscribing] = useState(false);
-
-  const handleNewsletterSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!email || !email.includes("@")) {
-      toast.error("Please enter a valid email address");
-      return;
-    }
-
-    setIsSubscribing(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      toast.success("🎉 Successfully subscribed to our newsletter!");
-      setEmail("");
-      setIsSubscribing(false);
-    }, 1000);
-    
-    // TODO: Replace with actual API call
-    // await fetch(`${API_BASE_URL}/newsletter/subscribe`, {
-    //   method: 'POST',
-    //   body: JSON.stringify({ email })
-    // });
-  };
-  return <footer className="border-t border-border bg-card" role="contentinfo" aria-label="Site footer">
+  return <footer className="border-t border-border bg-card">
       <div className="container px-4 py-12">
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+        <div className="grid md:grid-cols-4 gap-8 mb-8">
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex flex-col space-y-1">
@@ -65,7 +34,7 @@ export const Footer = () => {
 
           {/* Services */}
           <div>
-            <h4 className="font-bold mb-4">Services</h4>
+            <h4 className="font-semibold text-[16px] mb-4">Services</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link to="/services" className="text-muted-foreground hover:text-primary transition-colors">
@@ -92,7 +61,7 @@ export const Footer = () => {
 
           {/* Company */}
           <div>
-            <h4 className="font-bold mb-4">Company</h4>
+            <h4 className="font-semibold text-[16px] mb-4">Company</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
@@ -119,7 +88,7 @@ export const Footer = () => {
 
           {/* Legal */}
           <div>
-            <h4 className="font-bold mb-4">Legal</h4>
+            <h4 className="font-semibold text-[16px] mb-4">Legal</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
@@ -137,7 +106,7 @@ export const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+                <a href="#" className="text-muted-foreground  hover:text-primary transition-colors">
                   Contact Support
                 </a>
               </li>
@@ -145,51 +114,10 @@ export const Footer = () => {
           </div>
         </div>
 
-        {/* Newsletter Section */}
-        {/* <div className="mb-8 p-6 md:p-8 bg-gradient-to-br from-[#181A20] to-[#0B0E11] border border-[#F0B90B]/20 rounded-xl">
-          <div className="grid md:grid-cols-2 gap-6 items-center">
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <Mail className="h-5 w-5 text-[#F0B90B]" />
-                <h3 className="text-xl font-bold text-white">Stay Updated</h3>
-              </div>
-              <p className="text-sm text-white/70">
-                Get the latest news, resources, and exclusive offers for newcomers to Canada.
-              </p>
-            </div>
-            <form onSubmit={handleNewsletterSignup} className="flex gap-2">
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={isSubscribing}
-                className="flex-1 bg-[#0B0E11] border-[#2b3139] text-white placeholder:text-white/40 focus:border-[#F0B90B] min-h-[44px]"
-                aria-label="Email address for newsletter"
-                required
-              />
-              <Button
-                type="submit"
-                disabled={isSubscribing}
-                className="bg-[#F0B90B] hover:bg-[#F3BA2F] text-[#0B0E11] font-semibold min-h-[44px] min-w-[44px] hover:scale-105 transition-all"
-                aria-label="Subscribe to newsletter"
-              >
-                {isSubscribing ? (
-                  <span className="flex items-center gap-2">
-                    <div className="h-4 w-4 border-2 border-[#0B0E11]/30 border-t-[#0B0E11] rounded-full animate-spin" />
-                    Subscribing...
-                  </span>
-                ) : (
-                  "Subscribe"
-                )}
-              </Button>
-            </form>
-          </div>
-        </div> */}
-
         <div className="border-t border-border pt-8 text-center text-sm text-muted-foreground">
-          <p>© 2025 ConnectCanada.io. All rights reserved.</p>
-          <p className="text-xs mt-1"> 2025 • Designed & Developed by Kyptronix LLP
+          
+          <p className="text-[14px]">© 2025 ConnectCanada.io. All rights reserved.</p>
+          <p className="text-xs mt-1"> 2025 • Designed & Developed by Kyptronix LLP
         </p>
         </div>
       </div>
