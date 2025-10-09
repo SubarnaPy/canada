@@ -19,6 +19,7 @@ app.use(cors({
     'https://gleaming-raindrop-809582.netlify.app',
     'https://kyptronix-canadian-nexus.netlify.app',
     'https://kyptronix-canada-nexus.netlify.app',
+    'https://kyptronix-canada-nexus.netlify.app',
     process.env.FRONTEND_URL
   ].filter(Boolean),
   credentials: true,

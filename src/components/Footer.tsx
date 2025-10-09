@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Facebook, Twitter, Linkedin, Instagram, Mail, Shield, Lock, CheckCircle, Globe } from "lucide-react";
+import { Facebook, Twitter, Linkedin, Instagram, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
@@ -8,7 +8,6 @@ import { toast } from "sonner";
 export const Footer = () => {
   const [email, setEmail] = useState("");
   const [isSubscribing, setIsSubscribing] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState("en");
 
   const handleNewsletterSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,12 +31,6 @@ export const Footer = () => {
     //   method: 'POST',
     //   body: JSON.stringify({ email })
     // });
-  };
-
-  const handleLanguageChange = (lang: string) => {
-    setSelectedLanguage(lang);
-    toast.success(`Language changed to ${lang === 'en' ? 'English' : 'Français'}`);
-    // TODO: Implement actual language switching logic
   };
   return <footer className="border-t border-border bg-card" role="contentinfo" aria-label="Site footer">
       <div className="container px-4 py-12">
@@ -153,7 +146,7 @@ export const Footer = () => {
         </div>
 
         {/* Newsletter Section */}
-        <div className="mb-8 p-6 md:p-8 bg-gradient-to-br from-[#181A20] to-[#0B0E11] border border-[#F0B90B]/20 rounded-xl">
+        {/* <div className="mb-8 p-6 md:p-8 bg-gradient-to-br from-[#181A20] to-[#0B0E11] border border-[#F0B90B]/20 rounded-xl">
           <div className="grid md:grid-cols-2 gap-6 items-center">
             <div>
               <div className="flex items-center gap-2 mb-2">
@@ -192,44 +185,7 @@ export const Footer = () => {
               </Button>
             </form>
           </div>
-        </div>
-
-        {/* Trust Badges & Language Selector */}
-        <div className="mb-8 flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-border">
-          {/* Trust Badges */}
-          <div className="flex flex-wrap items-center gap-4 md:gap-6">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors" title="SSL Secured">
-              <Lock className="h-5 w-5 text-green-500" />
-              <span className="hidden sm:inline">SSL Secured</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors" title="Privacy Protected">
-              <Shield className="h-5 w-5 text-blue-500" />
-              <span className="hidden sm:inline">Privacy Protected</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors" title="Verified Consultants">
-              <CheckCircle className="h-5 w-5 text-[#F0B90B]" />
-              <span className="hidden sm:inline">Verified Consultants</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg" alt="Stripe" className="h-6 opacity-60 hover:opacity-100 transition-opacity" />
-              <span className="text-xs text-muted-foreground">Secure Payments</span>
-            </div>
-          </div>
-
-          {/* Language Selector */}
-          <div className="flex items-center gap-2">
-            <Globe className="h-4 w-4 text-muted-foreground" />
-            <select
-              value={selectedLanguage}
-              onChange={(e) => handleLanguageChange(e.target.value)}
-              className="bg-[#181A20] border border-[#2b3139] text-white text-sm rounded-lg px-3 py-2 focus:border-[#F0B90B] focus:outline-none focus:ring-2 focus:ring-[#F0B90B]/50 cursor-pointer min-h-[44px]"
-              aria-label="Select language"
-            >
-              <option value="en">English</option>
-              <option value="fr">Français</option>
-            </select>
-          </div>
-        </div>
+        </div> */}
 
         <div className="border-t border-border pt-8 text-center text-sm text-muted-foreground">
           <p>© 2025 ConnectCanada.io. All rights reserved.</p>

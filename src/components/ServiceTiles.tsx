@@ -1,11 +1,7 @@
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Slider } from "@/components/ui/slider";
 import { Link } from "react-router-dom";
 import { 
   Home, 
@@ -20,16 +16,7 @@ import {
   Users,
   Truck,
   Smartphone,
-  ArrowRight,
-  Loader2,
-  Search,
-  X,
-  Filter,
-  Grid3x3,
-  LayoutGrid,
-  Eye,
-  GitCompare,
-  List
+  ArrowRight
 } from "lucide-react";
 import { CanadaLoader } from "@/components/CanadaLoader";
 import { EmptyState } from "@/components/EmptyState";
@@ -169,15 +156,7 @@ export const ServiceTiles = () => {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [viewMode, setViewMode] = useState<"grid" | "compact" | "list">("grid");
-  
-  // New features state
-  const [favorites, setFavorites] = useState<number[]>([]);
-  const [compareList, setCompareList] = useState<number[]>([]);
-  const [quickViewService, setQuickViewService] = useState<Service | null>(null);
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
 
   // Fetch services from backend
   useEffect(() => {
@@ -210,66 +189,7 @@ export const ServiceTiles = () => {
     fetchServices();
   }, []);
 
-  // Toggle favorite with optimistic UI
-  const toggleFavorite = (serviceId: number) => {
-    // Immediate visual feedback
-    const serviceCard = document.querySelector(`[data-service-id="${serviceId}"]`);
-    if (serviceCard) {
-      serviceCard.classList.add('optimistic-success');
-      setTimeout(() => serviceCard.classList.remove('optimistic-success'), 300);
-    }
 
-    setFavorites(prev => 
-      prev.includes(serviceId) 
-        ? prev.filter(id => id !== serviceId)
-        : [...prev, serviceId]
-    );
-
-    // Simulate API call (replace with actual API in production)
-    // await fetch(`${API_BASE_URL}/favorites`, { method: 'POST', body: JSON.stringify({ serviceId }) });
-  };
-
-  // Toggle compare with optimistic UI
-  const toggleCompare = (serviceId: number) => {
-    // Immediate visual feedback
-    const serviceCard = document.querySelector(`[data-service-id="${serviceId}"]`);
-    if (serviceCard) {
-      serviceCard.classList.add('optimistic-success');
-      setTimeout(() => serviceCard.classList.remove('optimistic-success'), 300);
-    }
-
-    setCompareList(prev => {
-      if (prev.includes(serviceId)) {
-        return prev.filter(id => id !== serviceId);
-      } else if (prev.length < 3) {
-        return [...prev, serviceId];
-      }
-      return prev; // Max 3 items
-    });
-  };
-
-  // Extract unique categories from services
-  const categories = ["all", ...Array.from(new Set(services.map(s => s.category).filter(Boolean)))];
-
-  // Filter services based on search and category
-  const filteredServices = services.filter((service) => {
-    const matchesSearch = 
-      service.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      service.description.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    const matchesCategory = 
-      selectedCategory === "all" || 
-      service.category === selectedCategory;
-
-    return matchesSearch && matchesCategory;
-  });
-
-  // Clear all filters
-  const handleClearFilters = () => {
-    setSearchQuery("");
-    setSelectedCategory("all");
-    setPriceRange([0, 1000]);
-  };
 
   // Loading state
   if (loading) {
@@ -309,170 +229,10 @@ export const ServiceTiles = () => {
         </p>
       </div>
 
-      {/* Interactive Controls Section */}
-      <div className="max-w-7xl mx-auto mb-8 space-y-4">
-        {/* Search Bar */}
-        <div className="relative w-full">
-          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-[#848e9c]" />
-          <Input
-            type="text"
-            placeholder="Search services by name or description..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-12 py-6 bg-[#181A20] border-[#2b3139] text-white placeholder:text-[#848e9c] focus:border-[#F0B90B] focus:ring-[#F0B90B]/20 rounded-xl text-base"
-          />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery("")}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-[#848e9c] hover:text-white transition-colors"
-            >
-              <X className="h-5 w-5" />
-            </button>
-          )}
-        </div>
-
-        {/* Filters and View Controls */}
-        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-          {/* Category Filters */}
-          <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto">
-            <Filter className="h-4 w-4 text-[#848e9c] hidden sm:block" />
-            <span className="text-sm text-[#848e9c] hidden sm:inline">Filter:</span>
-            <div className="flex flex-wrap gap-2">
-              {categories.map((category) => (
-                <Badge
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`cursor-pointer capitalize px-3 py-1.5 text-xs font-medium transition-all ${
-                    selectedCategory === category
-                      ? "bg-[#F0B90B] text-black hover:bg-[#F0B90B]/90"
-                      : "bg-[#181A20] text-[#848e9c] border border-[#2b3139] hover:border-[#F0B90B]/50 hover:text-white"
-                  }`}
-                >
-                  {category}
-                </Badge>
-              ))}
-            </div>
-          </div>
-
-          {/* View Mode Toggle */}
-          <TooltipProvider>
-            <div className="flex items-center gap-2 bg-[#181A20] border border-[#2b3139] rounded-lg p-1">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={() => setViewMode("grid")}
-                    className={`p-2 rounded transition-all duration-300 ${
-                      viewMode === "grid"
-                        ? "bg-[#F0B90B] text-black scale-110"
-                        : "text-[#848e9c] hover:text-white hover:scale-105"
-                    }`}
-                  >
-                    <LayoutGrid className="h-4 w-4" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>Grid View</TooltipContent>
-              </Tooltip>
-
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={() => setViewMode("compact")}
-                    className={`p-2 rounded transition-all duration-300 ${
-                      viewMode === "compact"
-                        ? "bg-[#F0B90B] text-black scale-110"
-                        : "text-[#848e9c] hover:text-white hover:scale-105"
-                    }`}
-                  >
-                    <Grid3x3 className="h-4 w-4" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>Compact View</TooltipContent>
-              </Tooltip>
-
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={() => setViewMode("list")}
-                    className={`p-2 rounded transition-all duration-300 ${
-                      viewMode === "list"
-                        ? "bg-[#F0B90B] text-black scale-110"
-                        : "text-[#848e9c] hover:text-white hover:scale-105"
-                    }`}
-                  >
-                    <List className="h-4 w-4" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>List View</TooltipContent>
-              </Tooltip>
-            </div>
-          </TooltipProvider>
-        </div>
-
-        {/* Results Counter & Compare Badge */}
-        <div className="flex items-center justify-between text-sm text-[#848e9c]">
-          <div className="flex items-center gap-4">
-            <span>
-              Showing <strong className="text-[#F0B90B]">{filteredServices.length}</strong> of{" "}
-              <strong className="text-white">{services.length}</strong> services
-            </span>
-            {compareList.length > 0 && (
-              <Badge className="bg-[#F0B90B] text-black hover:bg-[#F3BA2F]">
-                <GitCompare className="h-3 w-3 mr-1" />
-                {compareList.length} to compare
-              </Badge>
-            )}
-          </div>
-          {(searchQuery || selectedCategory !== "all") && (
-            <button
-              onClick={handleClearFilters}
-              className="text-[#F0B90B] hover:text-[#F0B90B]/80 transition-colors flex items-center gap-1 hover:scale-105"
-            >
-              <X className="h-3 w-3" />
-              Clear filters
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* Quick View Modal */}
-      <Dialog open={!!quickViewService} onOpenChange={(open) => !open && setQuickViewService(null)}>
-        <DialogContent className="bg-[#181A20] border-[#F0B90B]/20 text-white max-w-2xl">
-          {quickViewService && (
-            <>
-              <DialogHeader>
-                <DialogTitle className="text-2xl font-bold text-[#F0B90B]">
-                  {quickViewService.title}
-                </DialogTitle>
-                <DialogDescription className="text-[#848e9c]">
-                  {quickViewService.description}
-                </DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4 mt-4">
-                {quickViewService.category && (
-                  <Badge className="bg-[#F0B90B]/20 text-[#F0B90B]">
-                    {quickViewService.category}
-                  </Badge>
-                )}
-                {quickViewService.price && (
-                  <p className="text-2xl font-bold text-[#F0B90B]">{quickViewService.price}</p>
-                )}
-                <Link to={`/services/${quickViewService.serviceId}`}>
-                  <Button className="w-full bg-[#F0B90B] hover:bg-[#F3BA2F] text-black">
-                    View Full Details
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
-              </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
-
       {/* Services Grid */}
-      {filteredServices.length === 0 ? (
+      {services.length === 0 ? (
         <EmptyState
           type="no-results"
-          onReset={handleClearFilters}
         />
       ) : (
         <div className={`max-w-7xl mx-auto ${
@@ -482,7 +242,7 @@ export const ServiceTiles = () => {
             ? "flex flex-col gap-4"
             : "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4"
         }`}>
-          {filteredServices.map((service) => {
+          {services.map((service) => {
             // Get icon component from icon name, fallback to Briefcase
             const Icon = service.icon ? iconMap[service.icon] || Briefcase : Briefcase;
             
@@ -568,7 +328,7 @@ export const ServiceTiles = () => {
       )}
 
       {/* View All Services Button */}
-      {filteredServices.length > 0 && (
+      {services.length > 0 && (
         <div className="text-center mt-8 md:mt-12">
           <Link to="/services">
             <Button 
