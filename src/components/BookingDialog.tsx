@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -26,7 +26,7 @@ interface BookingDialogProps {
 }
 
 export const BookingDialog = ({ open, onOpenChange, service }: BookingDialogProps) => {
-  const { isAuthenticated, logout: contextLogout } = useAuth();
+  const { isAuthenticated, user, logout: contextLogout } = useAuth();
   const navigate = useNavigate();
 
   const [step, setStep] = useState<"details" | "payment" | "success">("details");
@@ -37,6 +37,27 @@ export const BookingDialog = ({ open, onOpenChange, service }: BookingDialogProp
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Check authentication and pre-fill user data when dialog opens
+  useEffect(() => {
+    if (open) {
+      if (!isAuthenticated) {
+        // Redirect to login if not authenticated
+        toast({
+          title: "Authentication Required",
+          description: "Please sign in to book a service.",
+          variant: "destructive",
+        });
+        onOpenChange(false);
+        navigate('/auth');
+      } else if (user) {
+        // Pre-fill form with user data
+        setName(`${user.firstName} ${user.lastName}`);
+        setEmail(user.email);
+        setPhone(user.phone || "");
+      }
+    }
+  }, [open, isAuthenticated, user, navigate, onOpenChange]);
+
   const priceNumber = service.price.replace(/[^0-9]/g, '');
   const amount = priceNumber ? parseInt(priceNumber) : 0;
 
@@ -45,11 +66,22 @@ export const BookingDialog = ({ open, onOpenChange, service }: BookingDialogProp
     console.log('📝 Form data:', { name, email, phone, date, notes });
     console.log('💳 Service data:', service);
 
-    if (!name || !email || !date) {
+    // Only validate if user is not authenticated (fields are pre-filled for logged-in users)
+    if (!isAuthenticated && (!name || !email || !date)) {
       console.log('❌ Form validation failed');
       toast({
         title: "Required Fields",
         description: "Please fill in all required fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!date) {
+      console.log('❌ Date validation failed');
+      toast({
+        title: "Required Field",
+        description: "Please select a preferred date",
         variant: "destructive",
       });
       return;
@@ -168,25 +200,31 @@ export const BookingDialog = ({ open, onOpenChange, service }: BookingDialogProp
             </div>
 
             <div className="space-y-3">
-              <div>
-                <Label htmlFor="name" className="text-white">Full Name *</Label>
+              {/* <div>
+                <Label htmlFor="name" className="text-white">
+                  Full Name {!isAuthenticated && "*"}
+                </Label>
                 <Input
                   id="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="bg-[#181a20] border-[#2b3139] text-white"
+                  disabled={isAuthenticated}
+                  className="bg-[#181a20] border-[#2b3139] text-white disabled:opacity-60 disabled:cursor-not-allowed"
                   placeholder="John Doe"
                 />
               </div>
 
               <div>
-                <Label htmlFor="email" className="text-white">Email *</Label>
+                <Label htmlFor="email" className="text-white">
+                  Email {!isAuthenticated && "*"}
+                </Label>
                 <Input
                   id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="bg-[#181a20] border-[#2b3139] text-white"
+                  disabled={isAuthenticated}
+                  className="bg-[#181a20] border-[#2b3139] text-white disabled:opacity-60 disabled:cursor-not-allowed"
                   placeholder="john@example.com"
                 />
               </div>
@@ -198,10 +236,11 @@ export const BookingDialog = ({ open, onOpenChange, service }: BookingDialogProp
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="bg-[#181a20] border-[#2b3139] text-white"
+                  disabled={isAuthenticated}
+                  className="bg-[#181a20] border-[#2b3139] text-white disabled:opacity-60 disabled:cursor-not-allowed"
                   placeholder="+1 (555) 000-0000"
                 />
-              </div>
+              </div> */}
 
               <div>
                 <Label className="text-white mb-2 block">

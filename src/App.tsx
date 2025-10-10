@@ -6,7 +6,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { CartProvider } from "./contexts/CartContext";
 import { ScrollToTop } from "./components/ScrollToTop";
-import { BackToTop } from "./components/BackToTopButton";
 import Index from "./pages/Index";
 import Services from "./pages/Services";
 import ServiceDetail from "./pages/ServiceDetail";
@@ -45,7 +44,6 @@ const App = () => (
   <CartProvider>
   <BrowserRouter>
           <ScrollToTop />
-          <BackToTop />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/services" element={<Services />} />

@@ -64,6 +64,6 @@ const paymentSchema = new mongoose.Schema({
 
 // Index for faster queries
 paymentSchema.index({ userId: 1, status: 1 });
-paymentSchema.index({ stripePaymentIntentId: 1 });
+paymentSchema.index({ stripePaymentIntentId: 1 }, { sparse: true });
 
 module.exports = mongoose.model('Payment', paymentSchema);

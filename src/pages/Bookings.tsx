@@ -71,7 +71,7 @@ export default function Bookings() {
   const fetchBookings = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("authToken");
       
       if (!token) {
         navigate("/auth");
@@ -126,7 +126,7 @@ export default function Bookings() {
 
     try {
       setIsSubmitting(true);
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("authToken");
 
       const response = await fetch(
         `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/refunds/request`,

@@ -35,12 +35,10 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-[#0B0E11]">
       <Header />
-      {/* <main id="main-content" role="main"> */}
-        <Hero />
-        <ServiceTiles />
-        <HowItWorks />
-        <AIAgents />
-      {/* </main> */}
+      <Hero />
+      <ServiceTiles />
+      <HowItWorks />
+      <AIAgents />
       <Footer />
       <WhatsAppButton />
       <AIChatWidget />
