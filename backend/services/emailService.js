@@ -14,17 +14,17 @@ const sendMail = async (email, subject, htmlTemplate) => {
     console.log('HTML Template:', htmlTemplate);
 
     // Create a transporter using SMTP
-    let transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'smtp.gmail.com',
-      port: process.env.SMTP_PORT || 587,
-      secure: false,
-      service: 'gmail',
-      auth: {
-        user: process.env.SMTP_USERNAME || 'mannadabdas@gmail.com',
-        pass: process.env.SMTP_PASSWORD || 'vewo gbei usfv eoci', // Ensure this is correct!
-      },
-      timeout: 60000, // Increase timeout to 60 seconds (default is 10 seconds)
-    });
+   let transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST || 'smtp.gmail.com',
+  port: process.env.SMTP_PORT || 587,
+  secure: false,
+  auth: {
+    user: process.env.SMTP_USERNAME,
+    pass: process.env.SMTP_PASSWORD,
+  },
+  timeout: 60000
+});
+
 
     // Send the email
     let info = await transporter.sendMail({
