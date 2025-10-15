@@ -245,17 +245,19 @@ router.post('/admin/:id/reply', requireAdmin, async (req, res) => {
   try {
     const { meetingLink, scheduledDate, message } = req.body;
 
-    const consultation = await Consultation.findById(req.params.id);
+    const consultation = await Consultation.findByIdAndUpdate(
+      req.params.id,
+      {
+        status: 'confirmed',
+        scheduledDate: new Date(scheduledDate),
+        notes: message
+      },
+      { new: true, runValidators: false }
+    );
 
     if (!consultation) {
       return res.status(404).json({ error: 'Consultation not found' });
     }
-
-    // Update consultation
-    consultation.status = 'confirmed';
-    consultation.scheduledDate = new Date(scheduledDate);
-    consultation.notes = message;
-    await consultation.save();
 
     // Send email
     await emailService.sendConsultationReply({
