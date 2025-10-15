@@ -6,7 +6,7 @@ const createTransporter = () => {
   console.log('EMAIL_USER:', process.env.EMAIL_USER ? 'Set' : 'NOT SET');
   console.log('EMAIL_PASSWORD:', process.env.EMAIL_PASSWORD ? 'Set (length: ' + process.env.EMAIL_PASSWORD.length + ')' : 'NOT SET');
   
-  return nodemailer.createTransporter({
+  return nodemailer.createTransport({
     service: 'gmail',
     host: 'smtp.gmail.com',
     port: 465,
