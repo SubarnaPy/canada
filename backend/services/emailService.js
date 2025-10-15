@@ -1,31 +1,54 @@
 const nodemailer = require('nodemailer');
 
-// Email transporter confidfghjnguratxcvion with explicit SMTP settings for Render
+// Gmail transporter optimized for Render
 const createTransporter = () => {
-  return nodemailer.createTransport({
+  console.log('📧 Creating Gmail transporter...');
+  console.log('EMAIL_USER:', process.env.EMAIL_USER ? 'Set' : 'NOT SET');
+  console.log('EMAIL_PASSWORD:', process.env.EMAIL_PASSWORD ? 'Set (length: ' + process.env.EMAIL_PASSWORD.length + ')' : 'NOT SET');
+  
+  return nodemailer.createTransporter({
+    service: 'gmail',
     host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
+    port: 465,
+    secure: true,
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASSWORD
     },
     tls: {
-      rejectUnauthorized: false
+      rejectUnauthorized: true,
+      minVersion: 'TLSv1.2'
     },
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
-    socketTimeout: 10000
+    pool: true,
+    maxConnections: 1,
+    rateDelta: 20000,
+    rateLimit: 5,
+    logger: true,
+    debug: true
   });
 };
 
 // Send consultation reply email with meeting link
 exports.sendConsultationReply = async ({ to, name, consultationType, meetingLink, scheduledDate, message }) => {
+  console.log('\n📧 ===== EMAIL SEND ATTEMPT =====');
+  console.log('To:', to);
+  console.log('Name:', name);
+  console.log('Type:', consultationType);
+  console.log('Meeting Link:', meetingLink);
+  console.log('Scheduled:', scheduledDate);
+  
   try {
     const transporter = createTransporter();
     
+    console.log('✅ Transporter created successfully');
+    
+    // Verify transporter
+    console.log('🔍 Verifying transporter connection...');
+    await transporter.verify();
+    console.log('✅ Transporter verified successfully');
+    
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: `"Canadian Nexus" <${process.env.EMAIL_USER}>`,
       to,
       subject: `Consultation Confirmed - ${consultationType}`,
       html: `
@@ -50,10 +73,21 @@ exports.sendConsultationReply = async ({ to, name, consultationType, meetingLink
       `
     };
 
-    await transporter.sendMail(mailOptions);
-    return { success: true };
+    console.log('📤 Sending email...');
+    const info = await transporter.sendMail(mailOptions);
+    console.log('✅ Email sent successfully!');
+    console.log('Message ID:', info.messageId);
+    console.log('Response:', info.response);
+    console.log('===== EMAIL SEND COMPLETE =====\n');
+    
+    return { success: true, messageId: info.messageId };
   } catch (error) {
-    console.error('Email send error:', error);
+    console.error('\n❌ ===== EMAIL SEND FAILED =====');
+    console.error('Error Code:', error.code);
+    console.error('Error Command:', error.command);
+    console.error('Error Message:', error.message);
+    console.error('Full Error:', error);
+    console.error('===== EMAIL ERROR END =====\n');
     throw error;
   }
 };
