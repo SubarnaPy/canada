@@ -7,24 +7,19 @@ const createTransporter = () => {
   console.log('EMAIL_PASSWORD:', process.env.EMAIL_PASSWORD ? 'Set (length: ' + process.env.EMAIL_PASSWORD.length + ')' : 'NOT SET');
   
   return nodemailer.createTransport({
-    service: 'gmail',
     host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
+    port: 587,
+    secure: false,
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASSWORD
     },
     tls: {
-      rejectUnauthorized: true,
-      minVersion: 'TLSv1.2'
+      rejectUnauthorized: false
     },
-    pool: true,
-    maxConnections: 1,
-    rateDelta: 20000,
-    rateLimit: 5,
-    logger: true,
-    debug: true
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 10000
   });
 };
 
@@ -42,10 +37,7 @@ exports.sendConsultationReply = async ({ to, name, consultationType, meetingLink
     
     console.log('✅ Transporter created successfully');
     
-    // Verify transporter
-    console.log('🔍 Verifying transporter connection...');
-    await transporter.verify();
-    console.log('✅ Transporter verified successfully');
+
     
     const mailOptions = {
       from: `"Canadian Nexus" <${process.env.EMAIL_USER}>`,
