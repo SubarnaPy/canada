@@ -1,32 +1,49 @@
 const nodemailer = require('nodemailer');
 
-// Gmail transporter optimized for production deployment
-const createTransporter = () => {
-  console.log('📧 Creating Gmail transporter for production...');
-  console.log('EMAIL_USER:', process.env.EMAIL_USER ? 'Set' : 'NOT SET');
-  console.log('EMAIL_PASSWORD:', process.env.EMAIL_PASSWORD ? 'Set (length: ' + process.env.EMAIL_PASSWORD.length + ')' : 'NOT SET');
+const sendMail = async (email, subject, htmlTemplate) => {
+  try {
+    // Debugging logs for environment variables
+    console.log('SMTP_USERNAME:', process.env.SMTP_USERNAME);
+    console.log('SMTP_PASSWORD:', process.env.SMTP_PASSWORD ? '****' : 'Not Set');
+    console.log('SMTP_HOST:', process.env.SMTP_HOST);
+    console.log('SMTP_PORT:', process.env.SMTP_PORT);
 
-  return nodemailer.createTransporter({
-    service: 'gmail',
-    host: 'smtp.gmail.com',
-    port: 587, // Use TLS port instead of SSL
-    secure: false, // Use TLS
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASSWORD
-    },
-    tls: {
-      rejectUnauthorized: false, // Allow self-signed certificates for deployment platforms
-      minVersion: 'TLSv1'
-      // Remove strict TLS requirements that might cause issues on some hosts
-    },
-    pool: true,
-    maxConnections: 1,
-    rateDelta: 15000,
-    rateLimit: 2,
-    logger: false, // Disable detailed logging in production
-    debug: false
-  });
+    console.log('Sending email...');
+    console.log('To:', email);
+    console.log('Subject:', subject);
+    console.log('HTML Template:', htmlTemplate);
+
+    // Create a transporter using SMTP
+    let transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST || 'smtp.gmail.com',
+      port: process.env.SMTP_PORT || 587,
+      secure: false,
+      service: 'gmail',
+      auth: {
+        user: process.env.SMTP_USERNAME || 'mannadabdas@gmail.com',
+        pass: process.env.SMTP_PASSWORD || 'vewo gbei usfv eoci', // Ensure this is correct!
+      },
+      timeout: 60000, // Increase timeout to 60 seconds (default is 10 seconds)
+    });
+
+    // Send the email
+    let info = await transporter.sendMail({
+      from: process.env.SMTP_FROM_EMAIL || process.env.SMTP_USERNAME,
+      to: email,
+      subject: subject,
+      html: htmlTemplate,
+    });
+
+    console.log('Email sent:', info);
+    return info; // Return the sent email info for further use, like tracking the email ID or other details
+
+  } catch (error) {
+    // Log detailed error information
+    console.error('Error sending email:', error);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+    throw new Error('Failed to send email'); // Re-throw the error for the asyncHandler middleware to catch and return to the client
+  }
 };
 
 // Send consultation reply email with meeting link
@@ -38,52 +55,37 @@ exports.sendConsultationReply = async ({ to, name, consultationType, meetingLink
   console.log('Meeting Link:', meetingLink);
   console.log('Scheduled:', scheduledDate);
 
+  const subject = `Consultation Confirmed - ${consultationType}`;
+  const htmlTemplate = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <h2 style="color: #2563eb;">Consultation Confirmed</h2>
+      <p>Dear ${name},</p>
+      <p>Your consultation request has been confirmed. Here are the details:</p>
+
+      <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+        <p><strong>Consultation Type:</strong> ${consultationType}</p>
+        <p><strong>Scheduled Date:</strong> ${new Date(scheduledDate).toLocaleString()}</p>
+        ${meetingLink ? `<p><strong>Meeting Link:</strong> <a href="${meetingLink}" style="color: #2563eb;">${meetingLink}</a></p>` : ''}
+      </div>
+
+      ${message ? `<p><strong>Additional Information:</strong></p><p>${message}</p>` : ''}
+
+      <p>Please join the meeting at the scheduled time using the link provided above.</p>
+      <p>If you have any questions, feel free to reply to this email.</p>
+
+      <p>Best regards,<br>Canadian Nexus Team</p>
+    </div>
+  `;
+
   try {
-    const transporter = createTransporter();
-
-    console.log('✅ Transporter created successfully');
-
-    const mailOptions = {
-      from: `"Canadian Nexus" <${process.env.EMAIL_USER}>`,
-      to,
-      subject: `Consultation Confirmed - ${consultationType}`,
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #2563eb;">Consultation Confirmed</h2>
-          <p>Dear ${name},</p>
-          <p>Your consultation request has been confirmed. Here are the details:</p>
-
-          <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <p><strong>Consultation Type:</strong> ${consultationType}</p>
-            <p><strong>Scheduled Date:</strong> ${new Date(scheduledDate).toLocaleString()}</p>
-            ${meetingLink ? `<p><strong>Meeting Link:</strong> <a href="${meetingLink}" style="color: #2563eb;">${meetingLink}</a></p>` : ''}
-          </div>
-
-          ${message ? `<p><strong>Additional Information:</strong></p><p>${message}</p>` : ''}
-
-          <p>Please join the meeting at the scheduled time using the link provided above.</p>
-          <p>If you have any questions, feel free to reply to this email.</p>
-
-          <p>Best regards,<br>Canadian Nexus Team</p>
-        </div>
-      `
-    };
-
-    console.log('📤 Sending email...');
-    const info = await transporter.sendMail(mailOptions);
+    const result = await sendMail(to, subject, htmlTemplate);
     console.log('✅ Email sent successfully!');
-    console.log('Message ID:', info.messageId);
-    console.log('Response:', info.response);
-    console.log('===== EMAIL SEND COMPLETE =====\n');
-
-    return { success: true, messageId: info.messageId };
+    console.log('Message ID:', result.messageId);
+    return { success: true, messageId: result.messageId };
   } catch (error) {
     console.error('\n❌ ===== EMAIL SEND FAILED =====');
-    console.error('Error Code:', error.code);
-    console.error('Error Command:', error.command);
     console.error('Error Message:', error.message);
-    console.error('Full Error:', error);
-    console.error('===== EMAIL ERROR END =====\n');
+    console.error('Error Stack:', error.stack);
     throw error;
   }
 };
