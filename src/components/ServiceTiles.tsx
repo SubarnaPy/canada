@@ -220,69 +220,32 @@ export const ServiceTiles = () => {
   return (
     <section className="container px-4 py-12 md:py-20 bg-gradient-to-b from-[#0B0E11] to-[#181A20]">
       {/* Header Section */}
-      <div className="text-center mb-8 md:mb-12">
+      <div className="text-center mb-8 md:mb-12 animate-fade-in">
         <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4 text-white">
-          Complete Service Ecosystem
+          Complete <span className="text-[#F0B90B]">Service Ecosystem</span>
         </h2>
         <p className="text-base md:text-lg text-[#848e9c] max-w-2xl mx-auto px-4">
           Everything you need for a successful Canadian journey - from arrival to integration
         </p>
       </div>
 
-      {/* Services Grid */}
+      {/* Services Grid - Show only first 4 services */}
       {services.length === 0 ? (
         <EmptyState
           type="no-results"
         />
       ) : (
-        <div className={`max-w-7xl mx-auto ${
-          viewMode === "grid"
-            ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6"
-            : viewMode === "list"
-            ? "flex flex-col gap-4"
-            : "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4"
-        }`}>
-          {services.map((service) => {
+        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {services.slice(0, 4).map((service, index) => {
             // Get icon component from icon name, fallback to Briefcase
             const Icon = service.icon ? iconMap[service.icon] || Briefcase : Briefcase;
             
-            if (viewMode === "compact") {
-              return (
-                <Card
-                  key={service.serviceId}
-                  data-service-id={service.serviceId}
-                  className="group card-padding-sm bg-[#181A20] border-[#2b3139] hover:border-[#F0B90B]/50 transition-all duration-300 hover:shadow-[0_0_20px_rgba(252,213,53,0.1)] cursor-pointer"
-                >
-                  <Link to={`/services/${service.serviceId}`} className="flex items-center gap-4">
-                    <div className="p-2.5 rounded-lg bg-[#F0B90B]/10 flex-shrink-0">
-                      <Icon className="h-5 w-5 text-[#F0B90B]" />
-                    </div>
-                    
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-base font-bold mb-1 text-white group-hover:text-[#F0B90B] transition-colors truncate">
-                        {service.title}
-                      </h3>
-                      <p className="text-[#848e9c] text-xs line-clamp-2">
-                        {service.description}
-                      </p>
-                      {service.category && (
-                        <Badge className="mt-2 text-xs bg-[#F0B90B]/20 text-[#F0B90B] border-0">
-                          {service.category}
-                        </Badge>
-                      )}
-                    </div>
-
-                    <ArrowRight className="h-4 w-4 text-[#848e9c] group-hover:text-[#F0B90B] group-hover:translate-x-1 transition-all flex-shrink-0" />
-                  </Link>
-                </Card>
-              );
-            }
-
             return (
               <Card
                 key={service.serviceId}
                 data-service-id={service.serviceId}
-                className="group card-padding-md bg-[#181A20] border-[#2b3139] hover:border-[#F0B90B]/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(252,213,53,0.15)] cursor-pointer flex flex-col"
+                className="group card-padding-md bg-gradient-to-br from-[#181A20] to-[#0B0E11] border-[#2b3139] hover:border-[#F0B90B]/50 transition-all duration-500 hover:shadow-[0_0_40px_rgba(240,185,11,0.2)] hover:-translate-y-2 cursor-pointer flex flex-col animate-fade-in"
+                style={{ animationDelay: `${index * 100}ms` }}
               >
                 <Link to={`/services/${service.serviceId}`} className="space-y-3 md:space-y-4 flex flex-col h-full">
                   <div className="flex items-start justify-between">
@@ -328,15 +291,15 @@ export const ServiceTiles = () => {
       )}
 
       {/* View All Services Button */}
-      {services.length > 0 && (
-        <div className="text-center mt-8 md:mt-12">
+      {services.length > 4 && (
+        <div className="text-center mt-12">
           <Link to="/services">
             <Button 
               size="lg" 
-              className="bg-[#F0B90B] text-black hover:bg-[#F0B90B]/90 px-6 md:px-8 py-5 md:py-6 text-sm md:text-base font-semibold shadow-lg hover:shadow-[0_0_30px_rgba(252,213,53,0.3)] transition-all"
+              className="bg-gradient-to-r from-[#F0B90B] to-[#F3BA2F] hover:from-[#F3BA2F] hover:to-[#F0B90B] text-[#0B0E11] font-bold px-8 py-6 text-lg shadow-xl hover:shadow-2xl transition-all group"
             >
-              View All Services
-              <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5" />
+              View All {services.length} Services
+              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Button>
           </Link>
         </div>

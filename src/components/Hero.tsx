@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "sonner";
 import canadianJourneyImg from "@/assets/canadian-journey.jpg";
+import { ConsultationDialog } from "@/components/ConsultationDialog";
 
 // Skeleton Loader Component for form processing
 const FormSkeleton = () => (
@@ -32,6 +33,7 @@ export const Hero = () => {
   const [currentInput, setCurrentInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [showConsultationDialog, setShowConsultationDialog] = useState(false);
 
   // Helper function to get current step number
   const getStepNumber = () => {
@@ -79,10 +81,11 @@ export const Hero = () => {
               Explore Services
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
             </Button>
-            <Button 
-              size="lg" 
-              variant="outline" 
+            <Button
+              size="lg"
+              variant="outline"
               className="text-base border-[#F0B90B]/30 text-[#F0B90B] hover:bg-[#F0B90B]/10 hover:text-[#F3BA2F] hover:border-[#F0B90B]/60 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_rgba(240,185,11,0.3)]"
+              onClick={() => setShowConsultationDialog(true)}
             >
               Book Free Consultation
             </Button>
@@ -431,6 +434,12 @@ export const Hero = () => {
             </div>
           </Card>
         )}
+
+        {/* Consultation Dialog */}
+        <ConsultationDialog
+          open={showConsultationDialog}
+          onOpenChange={setShowConsultationDialog}
+        />
       </div>
     </section>
   );

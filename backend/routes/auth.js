@@ -122,6 +122,13 @@ router.post('/login', async (req, res) => {
       });
     }
 
+    // Check if user is active
+    if (user.isActive === false) {
+      return res.status(403).json({ 
+        error: 'Your account has been deactivated. Please contact support.' 
+      });
+    }
+
     // Verify password
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {

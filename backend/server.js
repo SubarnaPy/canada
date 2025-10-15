@@ -89,8 +89,10 @@ app.use('/api/services', require('./routes/services'));
 app.use('/api/admin/services', require('./routes/adminServices'));
 app.use('/api/admin/payments', require('./routes/adminPayments'));
 app.use('/api/admin/refunds', require('./routes/adminRefunds'));
+app.use('/api/admin/users', require('./routes/adminUsers'));
 app.use('/api/payments', require('./routes/payments'));
 app.use('/api/refunds', require('./routes/refunds'));
+app.use('/api/consultations', require('./routes/consultations'));
 
 // Stripe webhook routes - support both URL formats for compatibility
 const stripeWebhookHandler = require('./routes/webhooks/stripe');
