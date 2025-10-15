@@ -15,14 +15,13 @@ const sendMail = async (email, subject, htmlTemplate) => {
 
     // Create a transporter using SMTP
    let transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.gmail.com',
-  port: process.env.SMTP_PORT || 587,
-  secure: false,
+  host: "smtp.ethereal.email",
+  port: 587,
+  secure: false, // true for 465, false for other ports
   auth: {
-    user: process.env.SMTP_USERNAME,
-    pass: process.env.SMTP_PASSWORD,
+    user: "mondalsabarna29@gmail.com",
+    pass: "wzwl ooqt nrqs fdjh",
   },
-  timeout: 60000
 });
 
 
